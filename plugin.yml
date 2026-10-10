@@ -4,4 +4,6 @@ version: 0.0.2
 main: NhanAZ\SoundAPI\Main
 api: 5.0.0
 src-namespace-prefix: NhanAZ\SoundAPI
+website: https://github.com/NhanAZ-Plugins/SoundAPI
+description: Send and stop Bedrock sound packets from Axolotl-PM plugins.
 ...

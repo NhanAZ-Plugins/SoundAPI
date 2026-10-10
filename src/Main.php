@@ -14,7 +14,7 @@ class Main extends PluginBase implements Listener {
 
 	protected string $soundName;
 	protected float $x, $y, $z, $volume, $pitch;
-	protected $stopAll;
+	protected bool $stopAll;
 
 	/** An easy way to summon a sound at a player's location */
 	public function playSound(string $soundName, Player $player): void {

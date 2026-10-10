@@ -1,83 +1,57 @@
 # SoundAPI
-This is a plugin that allows you to send to any vanilla minecraft audio in an easy way.
 
-# How to use
+SoundAPI lets another [Axolotl-PM](https://github.com/axolotl-pm/PocketMine-MP) plugin send or stop Bedrock sound packets for a player. It exposes three public methods on the `NhanAZ\SoundAPI\Main` plugin instance: `playSound`, `playSoundCustom` and `stopSound`.
 
-## Send to the coordinates of the player standing any sound
+## Requirements
 
-First, you have to register the plugin, you can do this during the `onEnable()` of your plugin main class.
+- Axolotl-PM API 5.0.0. The [build workflow](.github/workflows/build.yml) records pinned server revisions and test results. Compatibility with every 5.x revision has not been verified.
+- PHP 8.1 or newer, as required by Axolotl-PM 5.
+
+## Installation
+
+Download the PHAR from [GitHub Releases](https://github.com/NhanAZ-Plugins/SoundAPI/releases), place it in the server's `plugins` directory and restart the server. SoundAPI has no commands or configuration file.
+
+## Use from another plugin
+
+Declare SoundAPI as a required plugin in the consumer's `plugin.yml`:
+
+```yaml
+depend: [SoundAPI]
+```
+
+Resolve the plugin instance and send a sound in a join listener:
+
 ```php
-protected function onEnable(): void {
-	$this->getServer()->getPluginManager()->registerEvents($this, $this);
-	$this->SoundAPI = $this->getServer()->getPluginManager()->getPlugin("SoundAPI");
+use NhanAZ\SoundAPI\Main as SoundAPI;
+use pocketmine\event\player\PlayerJoinEvent;
+
+$soundApi = $this->getServer()->getPluginManager()->getPlugin("SoundAPI");
+if (!$soundApi instanceof SoundAPI) {
+    throw new \RuntimeException("SoundAPI is unavailable");
 }
-```
-You can then send the player an sound track with the following code:
 
-[Click here](https://github.com/nhanaz-pm-pl/SoundAPI/blob/master/README.md#sounds) to see the sound list
-```php
-$soundName = "sound.name";
-$player = $event->getPlayer();
-$this->SoundAPI->playSound($soundName, $player);
-```
-I will now send the player a thunderclap sound when they join the server using the code below:
-```php
-public function onJoin(PlayerJoinEvent $event): void {
-	$soundName = "ambient.weather.lightning.impact";
-	$player = $event->getPlayer();
-	$this->SoundAPI->playSound($soundName, $player);
-}
+$soundApi->playSound("ambient.weather.lightning.impact", $event->getPlayer());
 ```
 
-## How to stop the sound that is playing
+The example assumes `$event` is a `PlayerJoinEvent` inside an event listener. The other methods keep their existing argument order:
+
 ```php
-# Remember to register the plugin in `onEnable()`
-```
-To stop an sound, follow the steps below
-```php
-$soundName = "sound.name";
-/**
- * $soundName = "";
- * This will stop all playing sound!
- */
-$stopAll = true;
-$player = $event->getPlayer();
-$this->SoundAPI->stopSound($soundName, $stopAll, $player);
-```
-I will now stop any audio when a player joins the server
-```php
-public function onJoin(PlayerJoinEvent $event): void {
-	$soundName = "ambient.cave";
-	$stopAll = true;
-	$player = $event->getPlayer();
-	$this->SoundAPI->stopSound($soundName, $stopAll, $player);
-}
+$soundApi->playSoundCustom("block.bell.hit", 4.5, 5.5, 6.5, 0.4, 1.2, $player);
+$soundApi->stopSound("ambient.cave", true, $player);
 ```
 
-## Still sending the player an sound track, but it allows for more customization
-You should use playSound() to make it easier to send sounds to players
-```php
-# Remember to register the plugin in `onEnable()`
-```
-I'll send players a bell sound when they join the server
-```php
-public function onJoin(PlayerJoinEvent $event): void {
-	$player = $event->getPlayer();
-	$soundName = "block.bell.hit"
-	$x = $player->getPosition()->getX();
-	$y = $player->getPosition()->getY();
-	$z = $player->getPosition()->getZ();
-	$volume = 1.0;
-	$pitch = 1.0;
-	$this->SoundAPI->playSoundCustom($soundName, $x, $y, $z, $volume, $pitch, $player);
-}
-```
+`playSound` uses the player's current position with volume and pitch set to `1.0`. `playSoundCustom` uses the supplied coordinates, volume and pitch. In `stopSound`, `true` requests that the client stop all sounds. The client decides whether a sound name exists and how it is rendered.
 
-# Sounds
-Click on the link below to see the sound list
+## Development and validation
 
-https://www.digminecraft.com/lists/sound_list_pe.php
+The [build workflow](.github/workflows/build.yml) checks the packet fields emitted by all three methods against pinned Axolotl-PM source revisions. It then uses [DevTools](https://github.com/NhanAZ/DevTools) to run PHPStan at maximum level, build the PHAR and inspect the artifact. Exact tested revisions are recorded in the workflow and its [GitHub Actions runs](https://github.com/NhanAZ-Plugins/SoundAPI/actions).
 
-# Contact
-[![Discord](https://img.shields.io/discord/986553214889517088?label=discord&color=7289DA&logo=discord)](https://discord.gg/j2X83ujT6c)\
-**You can contact me directly via Discord `NhanAZ#9115`**
+The tests check outgoing packet fields. Audio playback on a Bedrock client has not been verified.
+
+## Support
+
+Join [NhanAZ Discord](https://discord.gg/j2X83ujT6c) for support.
+
+## License
+
+SoundAPI is distributed under the [GNU General Public License version 3](LICENSE).
