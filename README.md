@@ -61,3 +61,8 @@ Join [NhanAZ Discord](https://discord.gg/j2X83ujT6c) for support.
 ## License
 
 SoundAPI is distributed under the [GNU General Public License version 3](LICENSE).
+
+
+## Credits
+
+Authors: NhanAZ.
