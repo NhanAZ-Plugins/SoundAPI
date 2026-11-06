@@ -50,7 +50,7 @@ $soundApi->stopSound("ambient.cave", true, $player);
 
 ## Development and validation
 
-The [build workflow](.github/workflows/build.yml) checks the packet fields emitted by all three methods against pinned Axolotl-PM source revisions. It then uses [DevTools](https://github.com/NhanAZ/DevTools) to run PHPStan at maximum level, build the PHAR and inspect the artifact. Exact tested revisions are recorded in the workflow and its [GitHub Actions runs](https://github.com/NhanAZ-Plugins/SoundAPI/actions).
+The [build workflow](.github/workflows/build.yml) checks the packet fields emitted by all three methods against pinned Axolotl-PM source revisions. It then uses [DevTools](https://github.com/AxolotlBucketLabs/DevTools) to run PHPStan at maximum level, build the PHAR and inspect the artifact. Exact tested revisions are recorded in the workflow and its [GitHub Actions runs](https://github.com/NhanAZ-Plugins/SoundAPI/actions).
 
 The tests check outgoing packet fields. Audio playback on a Bedrock client has not been verified.
 
